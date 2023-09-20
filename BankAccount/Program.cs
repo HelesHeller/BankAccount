@@ -54,7 +54,14 @@ class InsufficientFundsException : Exception
 
 class ATM
 {
-    public static void WithdrawMoney(BankAccount account, decimal amount)
+    private BankAccount account;
+
+    public ATM(BankAccount account)
+    {
+        this.account = account;
+    }
+
+    public void WithdrawMoney(decimal amount)
     {
         try
         {
@@ -78,21 +85,23 @@ class Program
     {
         try
         {
-            BankAccount account = new BankAccount(1000); 
+            BankAccount account = new BankAccount(1000); // Початковий баланс 1000 грн.
             Console.WriteLine($"Початковий баланс: {account.GetBalance()} грн.");
 
-            
+            ATM atm = new ATM(account);
+
+            // Вносимо кошти на рахунок
             account.Deposit(500);
             Console.WriteLine($"Внесено 500 грн. Поточний баланс: {account.GetBalance()} грн.");
 
-           
-            ATM.WithdrawMoney(account, 300); 
+            // Знімаємо кошти з рахунку
+            atm.WithdrawMoney(300); // Знято 300 грн. Поточний баланс: 1200 грн.
 
-            
-            ATM.WithdrawMoney(account, 1500); 
+            // Попробуємо зняти більше коштів, ніж є на рахунку
+            atm.WithdrawMoney(1500); // Помилка: Недостатньо коштів на рахунку.
 
-            
-            account.Deposit(-200); 
+            // Попробуємо внести від'ємну суму
+            account.Deposit(-200); // Помилка: Сума для внесення не може бути від'ємною.
         }
         catch (ArgumentException ex)
         {
